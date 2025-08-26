@@ -15,9 +15,8 @@ datasource db {
 }
 
 enum Role {
-  guru
-  siswa
-  orangtua
+  admin
+  customer
 }
 
 model User {
