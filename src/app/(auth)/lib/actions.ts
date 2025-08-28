@@ -1,6 +1,5 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { ActionResult } from '@/types';
 import { signIn } from '@/lib/auth';
@@ -44,7 +43,6 @@ export async function login(
     return { error: 'Something went wrong, please try again!' };
   }
 
-  revalidatePath('/', 'layout');
   redirect('/');
 }
 
@@ -79,6 +77,5 @@ export async function signup(
     return { error: 'Something went wrong, please try again!' };
   }
 
-  revalidatePath('/', 'layout');
   redirect('/login');
 }
