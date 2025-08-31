@@ -19,6 +19,12 @@ enum Role {
   customer
 }
 
+enum ProductStatus {
+  draft
+  published
+  archived
+}
+
 model User {
   id       String  @id @default(uuid()) @db.Uuid
   name     String
@@ -26,6 +32,17 @@ model User {
   password String
   role     Role
   avatar   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id          String        @id @default(uuid()) @db.Uuid
+  name        String
+  description String
+  images      String[]
+  status      ProductStatus @default(draft)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -1,6 +1,17 @@
 import { z } from 'zod';
 
+export const ALLOW_MIME_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+];
+export const ALLOWED_ZIP_TYPES = [
+  'application/zip',
+  'application/x-zip-compressed',
+];
 export const roleEnum = z.enum(['admin', 'customer']);
+export const productStatusEnum = z.enum(['draft', 'published', 'archived']);
 
 export const loginSchema = z.object({
   email: z
@@ -22,5 +33,36 @@ export const userSchema = z.object({
   name: z.string().min(1),
   email: z.email(),
   role: roleEnum,
-  avatar: z.string().url().optional(),
+  avatar: z.url().optional(),
 });
+
+export const productSchema = z.object({
+  name: z.string().min(1),
+  description: z.string(),
+  status: productStatusEnum.default('draft'),
+  images: z
+    .any()
+    .refine((files: File[]) => files.length === 3, {
+      message: 'Please upload 3 image product',
+    })
+    .refine(
+      (files: File[]) => {
+        let validate = false;
+
+        Array.from(files).find((file) => {
+          validate = ALLOW_MIME_TYPES.includes(file.type);
+        });
+
+        return validate;
+      },
+      {
+        message: 'Uploaded file should image',
+      }
+    ),
+});
+
+export const updateProductSchema = productSchema
+  .extend({
+    id: z.uuid('Invalid product ID'),
+  })
+  .omit({ images: true });

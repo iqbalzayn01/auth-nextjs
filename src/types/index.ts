@@ -1,9 +1,22 @@
-import { loginSchema, signupSchema, userSchema } from '@/lib/schema';
+import {
+  loginSchema,
+  signupSchema,
+  userSchema,
+  productSchema,
+} from '@/lib/schema';
 import z from 'zod';
 
 export type ActionResult = {
-  error: string;
+  error: string | null;
   success?: string;
+};
+
+export type ProductType = {
+  id: string;
+  name: string;
+  status: string | 'draft';
+  images: string[];
+  description: string;
 };
 
 export type LoginType = z.infer<typeof loginSchema>;
