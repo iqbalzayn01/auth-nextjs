@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ProductType } from '@/types';
 import { getPublicUrl } from '@/lib/supabase';
+import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react';
 
@@ -34,10 +35,15 @@ export function ProductCard({ products }: { products: ProductType[] }) {
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
                 {product.description}
               </p>
-              <Badge>{product.status}</Badge>
-              <Button className="rounded-full pl-4 pr-1 py-1 text-white flex items-center space-x-1 bg-black mt-4 text-xs font-bold dark:bg-zinc-800">
-                <span>Detail</span>
-              </Button>
+              <Badge variant="outline">{product.status}</Badge>
+              <div className="flex items-center gap-3 mt-4">
+                <Button asChild>
+                  <Link href={'/#'}>Edit</Link>
+                </Button>
+                <Button variant="destructive" asChild>
+                  <Link href={'/#'}>Remove</Link>
+                </Button>
+              </div>
             </BackgroundGradient>
           </div>
         );
