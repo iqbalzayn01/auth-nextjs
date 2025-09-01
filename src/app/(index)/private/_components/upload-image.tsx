@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Upload, X } from 'lucide-react';
 import { Label } from '@/components/ui/label';
+import { getPublicUrl } from '@/lib/supabase';
 import Image from 'next/image';
 
 interface ImageUploaderProps {
@@ -17,8 +18,6 @@ export default function ImageUploader({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrls, setPreviewUrls] = useState<string[]>(initialImageUrls);
   const [files, setFiles] = useState<File[]>([]);
-
-  console.log('COMPONENT_UPLOAD_IMAGES: ', initialImageUrls);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -57,11 +56,18 @@ export default function ImageUploader({
               className="relative group rounded-md overflow-hidden border"
             >
               <Image
-                src={url}
+                src={
+                  url && url.startsWith('blob:')
+                    ? url
+                    : url
+                    ? getPublicUrl('bucket-images', url)
+                    : '/placeholder.png'
+                }
                 alt={`Preview ${idx + 1}`}
                 width={120}
                 height={120}
                 className="w-full h-32 object-cover"
+                priority
               />
               <button
                 type="button"

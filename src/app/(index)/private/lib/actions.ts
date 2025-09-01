@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { ActionResult } from '@/types';
-import { productSchema } from '@/lib/schema';
+import { productSchema, updateProductSchema } from '@/lib/schema';
 import { uploadFile, getPublicUrl, deleteFile } from '@/lib/supabase';
 import prisma from '@/lib/prisma';
 
@@ -43,6 +43,71 @@ export async function createProduct(
     return { error: null, success: 'Product created successfully' };
   } catch (error) {
     console.error('Error creating product:', error);
+    return { error: 'Something went wrong. Please try again.' };
+  }
+}
+
+export async function updateProduct(
+  _: unknown,
+  formData: FormData,
+  id: string
+): Promise<ActionResult> {
+  const validationData = {
+    id: id,
+    name: formData.get('name') as string,
+    description: formData.get('description') as string,
+    status: (formData.get('status') as string) || 'draft',
+  };
+  const validated = updateProductSchema.safeParse(validationData);
+  if (!validated.success) return { error: validated.error.issues[0].message };
+
+  const product = await prisma.product.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  if (!product) return { error: 'Product not found' };
+
+  const uploadImages = formData.getAll('images') as File[];
+  let filenames: string[] = [];
+
+  if (uploadImages && uploadImages.length > 0 && uploadImages[0].size > 0) {
+    const parsedImage = updateProductSchema.safeParse({
+      images: uploadImages,
+    });
+
+    if (!parsedImage.success)
+      return {
+        error: parsedImage.error.issues[0].message,
+      };
+
+    for (const image of uploadImages) {
+      const filename = await uploadFile(image, 'bucket-images', {
+        type: 'image',
+      });
+      filenames.push(filename);
+    }
+  } else {
+    filenames = product.images;
+  }
+
+  try {
+    await prisma.product.update({
+      where: {
+        id: id,
+      },
+      data: {
+        name: validated.data.name,
+        description: validated.data.description,
+        status: validated.data.status,
+        images: filenames,
+      },
+    });
+
+    revalidatePath('/private', 'layout');
+    return { error: null, success: 'Product updated successfully' };
+  } catch (error) {
+    console.error('Error updating product:', error);
     return { error: 'Something went wrong. Please try again.' };
   }
 }

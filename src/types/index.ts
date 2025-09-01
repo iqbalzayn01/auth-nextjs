@@ -6,6 +6,14 @@ export type ActionResult = {
   success?: string;
 };
 
+export type TypeId = {
+  id: string;
+};
+
+export type TypeParams = {
+  params: Promise<TypeId>;
+};
+
 export type ProductType = {
   id: string;
   name: string;

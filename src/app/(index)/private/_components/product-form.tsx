@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { ActionResult } from '@/types';
-import { createProduct } from '../lib/actions';
+import { createProduct, updateProduct } from '../lib/actions';
 import { useActionState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -56,14 +56,13 @@ export default function ProductForm({
   type,
   data,
 }: ProductFormProps) {
-  //   const updateProductWithId = (_: unknown, formData: FormData) => {
-  //     return updateProduct(_, formData, data?.id ?? '');
-  //   };
-  //   const [state, formAction] = useActionState(
-  //     type ? createProduct : updateProductWithId,
-  //     initialState
-  //   );
-  const [state, formAction] = useActionState(createProduct, initialState);
+  const updateProductWithId = (_: unknown, formData: FormData) => {
+    return updateProduct(_, formData, data?.id ?? '');
+  };
+  const [state, formAction] = useActionState(
+    type === 'ADD' ? createProduct : updateProductWithId,
+    initialState
+  );
 
   return (
     <main className="max-w-xl mx-auto p-6">

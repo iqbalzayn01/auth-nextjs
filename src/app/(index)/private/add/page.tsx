@@ -10,7 +10,7 @@ import ProductForm from '../_components/product-form';
 import Link from 'next/link';
 import React from 'react';
 
-export default async function CreatePage() {
+export default function CreateProductPage() {
   return (
     <div className="mx-auto flex flex-1 flex-col gap-4 p-4">
       <Card className="max-w-[768px]">

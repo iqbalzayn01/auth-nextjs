@@ -39,7 +39,7 @@ export function ProductCard({ products }: { products: ProductType[] }) {
               <Badge variant="outline">{product.status}</Badge>
               <div className="flex items-center gap-3 mt-4">
                 <Button asChild>
-                  <Link href={'/#'}>Edit</Link>
+                  <Link href={`/private/edit/${product.id}`}>Edit</Link>
                 </Button>
                 <DeleteForm id={product.id} />
               </div>
