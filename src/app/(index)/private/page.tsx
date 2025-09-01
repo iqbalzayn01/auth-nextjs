@@ -21,6 +21,9 @@ export default async function PrivatePage() {
         <Button asChild>
           <Link href={`/private/add`}>Create Product</Link>
         </Button>
+        <Button variant="outline" asChild>
+          <Link href={`/`}>Home</Link>
+        </Button>
         <Logout />
       </section>
 

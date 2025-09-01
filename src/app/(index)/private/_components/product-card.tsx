@@ -5,13 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ProductType } from '@/types';
 import { getPublicUrl } from '@/lib/supabase';
+import DeleteForm from './delete-form';
 import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react';
 
 export function ProductCard({ products }: { products: ProductType[] }) {
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <div className="grid justify-center gap-5">
       {products.map((product) => {
         const firstImage = product.images?.[0]
           ? getPublicUrl('bucket-images', product.images[0])
@@ -40,9 +41,7 @@ export function ProductCard({ products }: { products: ProductType[] }) {
                 <Button asChild>
                   <Link href={'/#'}>Edit</Link>
                 </Button>
-                <Button variant="destructive" asChild>
-                  <Link href={'/#'}>Remove</Link>
-                </Button>
+                <DeleteForm id={product.id} />
               </div>
             </BackgroundGradient>
           </div>

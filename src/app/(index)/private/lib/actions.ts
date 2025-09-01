@@ -29,8 +29,6 @@ export async function createProduct(
     filenames.push(filename);
   }
 
-  console.log('ACTION_UPLOAD_IMAGES: ', filenames);
-
   try {
     await prisma.product.create({
       data: {
@@ -41,7 +39,7 @@ export async function createProduct(
       },
     });
 
-    revalidatePath('/private', 'page');
+    revalidatePath('/private', 'layout');
     return { error: null, success: 'Product created successfully' };
   } catch (error) {
     console.error('Error creating product:', error);
@@ -49,7 +47,31 @@ export async function createProduct(
   }
 }
 
-// await prisma.product.delete({ where: { id: product.id } });
-// for (const filename of filenames) {
-//   await deleteFile('bucket-images', filename);
-// }
+export async function deleteProduct(
+  _prevState: ActionResult,
+  formData: FormData
+): Promise<ActionResult> {
+  const id = formData.get('id') as string;
+
+  if (!id) {
+    return { error: 'Product ID is required' };
+  }
+
+  const product = await prisma.product.findUnique({
+    where: { id },
+  });
+  if (!product) return { error: 'Product not found' };
+
+  try {
+    await prisma.product.delete({ where: { id: product.id } });
+    for (const image of product.images) {
+      await deleteFile('bucket-images', image);
+    }
+
+    revalidatePath('/private', 'page');
+    return { error: null, success: 'Product deleted successfully' };
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    return { error: 'Something went wrong. Please try again.' };
+  }
+}

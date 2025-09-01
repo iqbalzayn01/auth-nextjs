@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import type { ActionResult } from '@/types';
+import { ActionResult } from '@/types';
 import { createProduct } from '../lib/actions';
 import { useActionState } from 'react';
 import { Input } from '@/components/ui/input';
@@ -42,10 +42,10 @@ const SubmitButton = () => {
     <Button type="submit" disabled={pending}>
       {pending ? (
         <>
-          <Loader2 className="animate-spin mr-2 h-4 w-4" /> Mohon tunggu
+          <Loader2 className="animate-spin mr-2 h-4 w-4" /> Please wait...
         </>
       ) : (
-        'Simpan'
+        'Create'
       )}
     </Button>
   );
@@ -65,16 +65,15 @@ export default function ProductForm({
   //   );
   const [state, formAction] = useActionState(createProduct, initialState);
 
-  if (data) {
-    console.log('DATA PRODUCT:', data);
-    console.log('IMAGE:', data.images);
-  }
-
   return (
     <main className="max-w-xl mx-auto p-6">
       <form action={formAction} className="space-y-6">
         {state.error && (
           <p className="text-red-500 text-sm font-medium">{state.error}</p>
+        )}
+
+        {state.success && (
+          <p className="text-green-600 text-sm font-medium">{state.success}</p>
         )}
 
         {type === 'EDIT' && <input type="hidden" name="id" value={data?.id} />}

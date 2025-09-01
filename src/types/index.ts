@@ -1,9 +1,4 @@
-import {
-  loginSchema,
-  signupSchema,
-  userSchema,
-  productSchema,
-} from '@/lib/schema';
+import { loginSchema, signupSchema, userSchema } from '@/lib/schema';
 import z from 'zod';
 
 export type ActionResult = {
